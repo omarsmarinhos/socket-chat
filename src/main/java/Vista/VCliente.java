@@ -7,7 +7,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.List;
 
 public class VCliente extends javax.swing.JFrame {
@@ -24,8 +23,9 @@ public class VCliente extends javax.swing.JFrame {
         initDataTable();
         jLabel5.setText(InetAddress.getLocalHost().getHostAddress());
         jLabel6.setText(java.util.UUID.randomUUID().toString()
-                .substring(0, 12)
+                .substring(0, 12)             
                 .toUpperCase());
+        btn_desconectar.setEnabled(false);
     }
 
     private void initClientSocket() throws IOException {
@@ -57,7 +57,7 @@ public class VCliente extends javax.swing.JFrame {
                     }
                 }
             } catch (IOException | ClassNotFoundException ex) {
-                ex.printStackTrace();
+                System.out.println("DESCONECTADO");
             }
         });
         receiveThread.start();
@@ -90,7 +90,7 @@ public class VCliente extends javax.swing.JFrame {
         tbl_listaContactos = new javax.swing.JTable();
         jLabel9 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        btn_conectarCon = new javax.swing.JButton();
+        btn_desconectar = new javax.swing.JButton();
         lbl_nickname = new javax.swing.JLabel();
 
         jLabel8.setText("jLabel8");
@@ -161,13 +161,13 @@ public class VCliente extends javax.swing.JFrame {
         jLabel7.setText("Selecciona un usuario para enviar mensaje");
         jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 160, -1, -1));
 
-        btn_conectarCon.setText("CONECTAR CON");
-        btn_conectarCon.addActionListener(new java.awt.event.ActionListener() {
+        btn_desconectar.setText("CONECTAR CON");
+        btn_desconectar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_conectarConActionPerformed(evt);
+                btn_desconectarActionPerformed(evt);
             }
         });
-        jPanel1.add(btn_conectarCon, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 410, -1, -1));
+        jPanel1.add(btn_desconectar, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 410, -1, -1));
 
         lbl_nickname.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lbl_nickname.setText("... NICKNAME ...");
@@ -207,19 +207,32 @@ public class VCliente extends javax.swing.JFrame {
 
         //CAMBIAR ESTADO a ACTIVO
         cambiarEstado("Activo");
+        btn_conectarServidor.setEnabled(false);
+        btn_desconectar.setEnabled(true);
+        System.out.println("CONECTADO");
     }
 
     private void cambiarEstado(String estado) {
         if (estado.equals("Activo")) {
             jLabel9.setIcon(new ImageIcon("src/main/java/imagenes/circulo_verde.png"));
+        } else if (estado.equals("Inactivo")) {
+            jLabel9.setIcon(new ImageIcon("src/main/java/imagenes/circulo_gris.png"));
         }
     }
 
-    private void btn_conectarConActionPerformed(java.awt.event.ActionEvent evt) {
-        // VaLidar si se ha seleccionado el usuario (al que desea enviarle un mensaje) en la tabla tbl_listaContactos 
-        // Redirigir a otra ventana de chat
-
-        //RECORDAR: Que cuando el usuario seleccione en la tabla, el label lbl_nickname cambie al nickanme al que desea conectarse
+    private void btn_desconectarActionPerformed(java.awt.event.ActionEvent evt){
+        try {
+            clientesData.clear();
+            actualizarTablaCliente();
+            out.writeObject("DESCONECTAR");
+            out.flush();
+            socket.close();
+            cambiarEstado("Inactivo");
+            btn_conectarServidor.setEnabled(true);
+            btn_desconectar.setEnabled(false);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void main(String args[]) {
@@ -267,7 +280,7 @@ public class VCliente extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btn_conectarCon;
+    private javax.swing.JButton btn_desconectar;
     private javax.swing.JButton btn_conectarServidor;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

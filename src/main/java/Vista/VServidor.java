@@ -5,6 +5,7 @@ import javax.swing.table.DefaultTableModel;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,6 @@ public class VServidor extends javax.swing.JFrame {
 
     private static final List<ClienteRunnable> clientes = new ArrayList<>();
     private ServerSocket serverSocket;
-    private Boolean estaActivo = false;
 
     static DefaultTableModel clientesModel = new DefaultTableModel();
 
@@ -21,6 +21,7 @@ public class VServidor extends javax.swing.JFrame {
         initDataTable();
 
         initServerSocket();
+        btn_start.setEnabled(false);
     }
 
     private void initServerSocket() throws IOException {
@@ -28,7 +29,7 @@ public class VServidor extends javax.swing.JFrame {
             @Override
             protected Void doInBackground() throws Exception {
                 serverSocket = new ServerSocket(59001);
-                System.out.println("Servidor esta a la escucha...");
+                System.out.println("Servidor está a la escucha...");
                 while (true) {
                     Socket socket = serverSocket.accept();
                     ClienteRunnable cliente = new ClienteRunnable(socket);
@@ -192,7 +193,14 @@ public class VServidor extends javax.swing.JFrame {
 
     private void btn_startActionPerformed(java.awt.event.ActionEvent evt) {
         //Activar el servidor
-        estaActivo = true;
+        try {
+
+            initServerSocket();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        btn_start.setEnabled(false);
+        btn_stop.setEnabled(true);
 
         //RECORDAR: QUE LA TABLA DEBE ESTAR AL ESCUCHA CUANDO UN USUARIO SE CONECTE AL SERVIDOR,
         // PARA QUE APARESCA SU IP NICKANME Y UUID
@@ -200,7 +208,13 @@ public class VServidor extends javax.swing.JFrame {
 
     private void btn_stopActionPerformed(java.awt.event.ActionEvent evt) {
         // desactivar el servidor
-        estaActivo = false;
+        try {
+            serverSocket.close();
+            btn_start.setEnabled(true);
+            btn_stop.setEnabled(false);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         // los clientes en VCliente debe aparecer como desconectado(circulo_gris)
     }
@@ -239,15 +253,20 @@ public class VServidor extends javax.swing.JFrame {
                     Object entrada = in.readObject();
 
                     if (entrada != null) {
-                        clienteInfo = (ClienteInfo) entrada;
 
-                        synchronized (clientes) {
-                            clientes.add(this);
+                        if (entrada instanceof ClienteInfo) {
+                            clienteInfo = (ClienteInfo) entrada;
+
+                            synchronized (clientes) {
+                                clientes.add(this);
+                            }
+                        } else if (entrada instanceof String) {
+                            synchronized (clientes) {
+                                clientes.remove(this);
+                            }
                         }
 
-                        // Actualizar la tabla de clientes
                         actualizarTablaClientes();
-
                         enviarListaClientes();
                     }
                 }
@@ -259,29 +278,28 @@ public class VServidor extends javax.swing.JFrame {
             }
         }
 
-        private void enviarListaClientes() throws IOException {
-            synchronized (clientes) {
-                List<String[]> clientesData = new ArrayList<>();
+    }
 
-                for (ClienteRunnable cliente : clientes) {
-                    String[] data = {
-                            cliente.clienteInfo.getIp(),
-                            cliente.clienteInfo.getUuid(),
-                            cliente.clienteInfo.getNickname(),
-                            cliente.clienteInfo.getStatus()
-                    };
-                    clientesData.add(data);
-                }
+    private static void enviarListaClientes() throws IOException {
+        synchronized (clientes) {
+            List<String[]> clientesData = new ArrayList<>();
 
-                for (ClienteRunnable cliente : clientes) {
-                    cliente.out.writeObject(clientesData);
-                    cliente.out.flush();
-                }
+            for (ClienteRunnable cliente : clientes) {
+                String[] data = {
+                        cliente.clienteInfo.getIp(),
+                        cliente.clienteInfo.getUuid(),
+                        cliente.clienteInfo.getNickname(),
+                        cliente.clienteInfo.getStatus()
+                };
+                clientesData.add(data);
+            }
+
+            for (ClienteRunnable cliente : clientes) {
+                cliente.out.writeObject(clientesData);
+                cliente.out.flush();
             }
         }
     }
-
-
 
     private static void actualizarTablaClientes() {
         // Borrar todas las filas existentes en la tabla
