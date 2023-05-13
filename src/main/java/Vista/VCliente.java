@@ -15,6 +15,9 @@ public class VCliente extends javax.swing.JFrame {
     private ObjectInputStream in;
     private ObjectOutputStream out;
 
+    private String[] destinatario;
+    private ClienteInfo miInfo;
+
     private final DefaultTableModel clientesModel = new DefaultTableModel();
     List<String[]> clientesData;
 
@@ -40,8 +43,8 @@ public class VCliente extends javax.swing.JFrame {
         String uuid = jLabel6.getText();
         String nickname = jTextField1.getText();
         String estado = "conectado";
-        ClienteInfo info = new ClienteInfo(ip, uuid, nickname, estado);
-        out.writeObject(info);
+        miInfo = new ClienteInfo(ip, uuid, nickname, estado);
+        out.writeObject(miInfo);
         out.flush();
 
         Thread receiveThread = new Thread(() -> {
@@ -76,7 +79,12 @@ public class VCliente extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel8 = new javax.swing.JLabel();
+        dlgChat = new javax.swing.JDialog();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtChat = new javax.swing.JTextArea();
+        txtMensaje = new javax.swing.JTextField();
+        btnEnviar = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -92,8 +100,64 @@ public class VCliente extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         btn_desconectar = new javax.swing.JButton();
         lbl_nickname = new javax.swing.JLabel();
+        btnChat = new javax.swing.JButton();
 
-        jLabel8.setText("jLabel8");
+        dlgChat.setBackground(new java.awt.Color(255, 255, 255));
+        dlgChat.setResizable(false);
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+
+        btnChat.setEnabled(false);
+
+        txtChat.setColumns(20);
+        txtChat.setRows(5);
+        txtChat.setEditable(false);
+        jScrollPane2.setViewportView(txtChat);
+
+        btnEnviar.setText("Enviar");
+        btnEnviar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEnviarActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(txtMensaje, javax.swing.GroupLayout.PREFERRED_SIZE, 308, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnEnviar, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtMensaje, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
+                    .addComponent(btnEnviar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout dlgChatLayout = new javax.swing.GroupLayout(dlgChat.getContentPane());
+        dlgChat.getContentPane().setLayout(dlgChatLayout);
+        dlgChatLayout.setHorizontalGroup(
+            dlgChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        dlgChatLayout.setVerticalGroup(
+            dlgChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -116,7 +180,7 @@ public class VCliente extends javax.swing.JFrame {
                 btn_conectarServidorActionPerformed(evt);
             }
         });
-        jPanel1.add(btn_conectarServidor, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 50, -1, -1));
+        jPanel1.add(btn_conectarServidor, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 40, 180, -1));
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel3.setText("IP");
@@ -133,59 +197,94 @@ public class VCliente extends javax.swing.JFrame {
         jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 110, 85, -1));
 
         tbl_listaContactos.setModel(new javax.swing.table.DefaultTableModel(
-                new Object[][]{
-                        {null, null, null, null},
-                        {null, null, null, null},
-                        {null, null, null, null},
-                        {null, null, null, null},
-                        {null, null, null, null},
-                        {null, null, null, null},
-                        {null, null, null, null},
-                        {null, null, null, null},
-                        {null, null, null, null},
-                        {null, null, null, null},
-                        {null, null, null, null}
-                },
-                new String[]{
-                        "IP", "UUID", "NICKNAME", "STATUS"
-                }
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "IP", "UUID", "NICKNAME", "STATUS"
+            }
         ));
+        tbl_listaContactos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbl_listaContactosMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tbl_listaContactos);
 
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 190, 490, 200));
 
         jLabel9.setIcon(new ImageIcon("src/main/java/imagenes/circulo_gris.png"));
-        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(477, 94, 40, 40));
+        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 100, 40, 40));
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel7.setText("Selecciona un usuario para enviar mensaje");
         jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 160, -1, -1));
 
-        btn_desconectar.setText("CONECTAR CON");
+        btn_desconectar.setText("DESCONECTAR");
         btn_desconectar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_desconectarActionPerformed(evt);
             }
         });
-        jPanel1.add(btn_desconectar, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 410, -1, -1));
+        jPanel1.add(btn_desconectar, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 70, 180, -1));
 
         lbl_nickname.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lbl_nickname.setText("... NICKNAME ...");
         jPanel1.add(lbl_nickname, new org.netbeans.lib.awtextra.AbsoluteConstraints(426, 410, 90, 20));
 
+        btnChat.setText("CHAT");
+        btnChat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChatActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnChat, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 410, -1, -1));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void tbl_listaContactosMouseClicked(java.awt.event.MouseEvent evt) {
+        int x = tbl_listaContactos.getSelectedRow();
+        destinatario = clientesData.get(x);
+        btnChat.setEnabled(true);
+    }
+    private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {
+
+    }
+
+    private void btnChatActionPerformed(java.awt.event.ActionEvent evt) {
+        if (miInfo.getUuid().equals(destinatario[1])) {
+            return;
+        }
+        txtChat.setText("");
+        txtMensaje.setText("");
+        dlgChat.setVisible(true);
+
+        dlgChat.setTitle(destinatario[1].concat(" ").concat(destinatario[2]));
+        dlgChat.setSize(440, 350);
+        btnChat.setEnabled(false);
+    }
 
     private void btn_conectarServidorActionPerformed(java.awt.event.ActionEvent evt) {
         // VALIDAR SI EL CAMPO DEL NICKNAME ESTA VACIO O NO
@@ -280,8 +379,11 @@ public class VCliente extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btn_desconectar;
+    private javax.swing.JButton btnChat;
+    private javax.swing.JButton btnEnviar;
     private javax.swing.JButton btn_conectarServidor;
+    private javax.swing.JButton btn_desconectar;
+    private javax.swing.JDialog dlgChat;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -289,12 +391,15 @@ public class VCliente extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lbl_nickname;
     private javax.swing.JTable tbl_listaContactos;
+    private javax.swing.JTextArea txtChat;
+    private javax.swing.JTextField txtMensaje;
     // End of variables declaration//GEN-END:variables
 }
