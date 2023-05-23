@@ -41,9 +41,14 @@ public class VCliente extends javax.swing.JFrame {
         // Enviar datos al servidor
         String ip = jLabel5.getText();
         String uuid = jLabel6.getText();
-        String nickname = jTextField1.getText();
-        String estado = "conectado";
-        miInfo = new ClienteInfo(ip, uuid, nickname, estado);
+        String username = jTextField1.getText();
+        Integer estado = 1;
+        miInfo = new ClienteInfo();
+        miInfo.setIp(ip);
+        miInfo.setUuid(uuid);
+        miInfo.setUuid(username);
+        miInfo.setUuid(username);
+        miInfo.setStatus(estado);
         out.writeObject(miInfo);
         out.flush();
 
@@ -305,16 +310,16 @@ public class VCliente extends javax.swing.JFrame {
         btn_conectarServidor.setEnabled(false);
 
         //CAMBIAR ESTADO a ACTIVO
-        cambiarEstado("Activo");
+        cambiarEstado(1);
         btn_conectarServidor.setEnabled(false);
         btn_desconectar.setEnabled(true);
         System.out.println("CONECTADO");
     }
 
-    private void cambiarEstado(String estado) {
-        if (estado.equals("Activo")) {
+    private void cambiarEstado(Integer estado) {
+        if (estado == 1) {
             jLabel9.setIcon(new ImageIcon("src/main/java/imagenes/circulo_verde.png"));
-        } else if (estado.equals("Inactivo")) {
+        } else if (estado == 2) {
             jLabel9.setIcon(new ImageIcon("src/main/java/imagenes/circulo_gris.png"));
         }
     }
@@ -326,7 +331,7 @@ public class VCliente extends javax.swing.JFrame {
             out.writeObject("DESCONECTAR");
             out.flush();
             socket.close();
-            cambiarEstado("Inactivo");
+            cambiarEstado(2);
             btn_conectarServidor.setEnabled(true);
             btn_desconectar.setEnabled(false);
         } catch (IOException e) {

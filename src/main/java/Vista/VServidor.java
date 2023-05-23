@@ -1,16 +1,19 @@
 package Vista;
 
+import repositories.ClientesRepositoryImpl;
+import repositories.ClientesRespository;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class VServidor extends javax.swing.JFrame {
 
+    private static final ClientesRespository clientesRepository = new ClientesRepositoryImpl();
     private static final List<ClienteRunnable> clientes = new ArrayList<>();
     private ServerSocket serverSocket;
 
@@ -19,7 +22,6 @@ public class VServidor extends javax.swing.JFrame {
     public VServidor() throws IOException {
         initComponents();
         initDataTable();
-
         initServerSocket();
         btn_start.setEnabled(false);
     }
@@ -257,8 +259,8 @@ public class VServidor extends javax.swing.JFrame {
                         if (entrada instanceof ClienteInfo) {
                             clienteInfo = (ClienteInfo) entrada;
 
-                            synchronized (clientes) {
-                                clientes.add(this);
+                            synchronized (clientesRepository) {
+                                clientesRepository.guardar(clienteInfo);
                             }
                         } else if (entrada instanceof String) {
                             synchronized (clientes) {
@@ -288,8 +290,8 @@ public class VServidor extends javax.swing.JFrame {
                 String[] data = {
                         cliente.clienteInfo.getIp(),
                         cliente.clienteInfo.getUuid(),
-                        cliente.clienteInfo.getNickname(),
-                        cliente.clienteInfo.getStatus()
+                        cliente.clienteInfo.getUsername(),
+                        String.valueOf(cliente.clienteInfo.getStatus())
                 };
                 clientesData.add(data);
             }
@@ -310,7 +312,7 @@ public class VServidor extends javax.swing.JFrame {
                 Object[] fila = {
                         cliente.clienteInfo.getIp(),
                         cliente.clienteInfo.getUuid(),
-                        cliente.clienteInfo.getNickname(),
+                        cliente.clienteInfo.getUsername(),
                         cliente.clienteInfo.getStatus()};
                 clientesModel.addRow(fila);
             }
