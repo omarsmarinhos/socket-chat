@@ -1,6 +1,7 @@
 package Vista;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class ClienteInfo implements Serializable {
     private String ip;
@@ -98,6 +99,14 @@ public class ClienteInfo implements Serializable {
 
     public void setNumCelular(String numCelular) {
         this.numCelular = numCelular;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ClienteInfo that = (ClienteInfo) o;
+        return Objects.equals(uuid, that.uuid) && Objects.equals(username, that.username);
     }
 
     @Override

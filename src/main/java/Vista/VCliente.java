@@ -15,7 +15,6 @@ public class VCliente extends javax.swing.JFrame {
     private ObjectInputStream in;
     private ObjectOutputStream out;
 
-    private String[] destinatario;
     private ClienteInfo miInfo;
 
     private final DefaultTableModel clientesModel = new DefaultTableModel();
@@ -24,10 +23,7 @@ public class VCliente extends javax.swing.JFrame {
     public VCliente(ClienteInfo clienteInfo) throws IOException {
         initComponents();
         initDataTable();
-        //jLabel5.setText(InetAddress.getLocalHost().getHostAddress());
-        //jLabel6.setText(java.util.UUID.randomUUID().toString()
-        //        .substring(0, 12)
-        //        .toUpperCase());
+        miInfo = clienteInfo;
         btn_desconectar.setEnabled(false);
     }
 
@@ -39,15 +35,7 @@ public class VCliente extends javax.swing.JFrame {
         in = new ObjectInputStream(socket.getInputStream());
 
         // Enviar datos al servidor
-        String ip = jLabel5.getText();
-        String uuid = jLabel6.getText();
-        String username = jTextField1.getText();
-        Integer estado = 2;
-        miInfo = new ClienteInfo();
-        miInfo.setIp(ip);
-        miInfo.setUuid(uuid);
-        miInfo.setUsername(username);
-        miInfo.setStatus(estado);
+        miInfo.setStatus(Estado.CONECTADO);
         out.writeObject(miInfo);
         out.flush();
 
@@ -57,6 +45,7 @@ public class VCliente extends javax.swing.JFrame {
                     Object obj = in.readObject();
                     if (obj instanceof List) {
                         clientesData = (List<ClienteInfo>) obj;
+                        clientesData.remove(miInfo);
                         // Actualizar la tabla de clientes en la interfaz gráfica
                         SwingUtilities.invokeLater(this::actualizarTablaCliente);
                     } else {
@@ -71,9 +60,7 @@ public class VCliente extends javax.swing.JFrame {
     }
 
     private void actualizarTablaCliente() {
-        // Borrar todas las filas existentes en la tabla
         clientesModel.setRowCount(0);
-        // Agregar los clientes a la tabla
         for (ClienteInfo data : clientesData) {
             clientesModel.addRow(new Object[]{
                     data.getIp(),
@@ -285,12 +272,6 @@ public class VCliente extends javax.swing.JFrame {
     }
 
     private void btn_conectarServidorActionPerformed(java.awt.event.ActionEvent evt) {
-        // VALIDAR SI EL CAMPO DEL NICKNAME ESTA VACIO O NO
-        if (jTextField1.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Ingrese un nickname");
-            return;
-        }
-
         //SE CONECTA AL SERVIDOR
         try {
             initClientSocket();

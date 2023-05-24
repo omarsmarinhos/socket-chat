@@ -12,7 +12,7 @@ public interface ClientesRespository {
     void guardar(ClienteInfo clienteInfo);
     Optional<ClienteInfo> buscarPorUUID(String uuid);
     ClienteInfo buscarPorUsername(String username);
-    void actualizarEstado(String uuid, Integer estado) throws SQLException;
+    void actualizarEstado(String uuid, Integer estado);
     //quitar después
     Optional<ClienteInfo> login(String username, String password);
 

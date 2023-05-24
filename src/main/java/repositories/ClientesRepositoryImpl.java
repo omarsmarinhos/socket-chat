@@ -1,6 +1,7 @@
 package repositories;
 
 import Vista.ClienteInfo;
+import Vista.Estado;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class ClientesRepositoryImpl implements ClientesRespository {
         try (Statement statement = getConnection().createStatement();
              ResultSet resultSet = statement.executeQuery(
                      "SELECT * FROM clientes " +
-                             "WHERE status = 1")) {
+                             "WHERE status = " + Estado.CONECTADO)) {
 
             while (resultSet.next()) {
                 ClienteInfo cliente = getClienteInfo(resultSet);
@@ -45,7 +46,7 @@ public class ClientesRepositoryImpl implements ClientesRespository {
             statement.setString(2, clienteInfo.getUuid());
             statement.setString(3, clienteInfo.getUsername());
             statement.setString(4, clienteInfo.getPassword());
-            statement.setInt(5, 2);
+            statement.setInt(5, Estado.DESCONECTADO);
             statement.setString(6, clienteInfo.getNombres());
             statement.setString(7, clienteInfo.getApellidos());
             statement.setString(8, clienteInfo.getFechaNacimiento());
