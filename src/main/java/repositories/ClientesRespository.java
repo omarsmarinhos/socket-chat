@@ -2,6 +2,7 @@ package repositories;
 
 import Vista.ClienteInfo;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +11,10 @@ public interface ClientesRespository {
     List<ClienteInfo> getClientes();
     void guardar(ClienteInfo clienteInfo);
     Optional<ClienteInfo> buscarPorUUID(String uuid);
-    void actualizarEstado(Integer estado);
+    ClienteInfo buscarPorUsername(String username);
+    void actualizarEstado(String uuid, Integer estado) throws SQLException;
+    //quitar después
+    Optional<ClienteInfo> login(String username, String password);
+
 
 }

@@ -19,15 +19,15 @@ public class VCliente extends javax.swing.JFrame {
     private ClienteInfo miInfo;
 
     private final DefaultTableModel clientesModel = new DefaultTableModel();
-    List<String[]> clientesData;
+    List<ClienteInfo> clientesData;
 
-    public VCliente() throws IOException {
+    public VCliente(ClienteInfo clienteInfo) throws IOException {
         initComponents();
         initDataTable();
-        jLabel5.setText(InetAddress.getLocalHost().getHostAddress());
-        jLabel6.setText(java.util.UUID.randomUUID().toString()
-                .substring(0, 12)             
-                .toUpperCase());
+        //jLabel5.setText(InetAddress.getLocalHost().getHostAddress());
+        //jLabel6.setText(java.util.UUID.randomUUID().toString()
+        //        .substring(0, 12)
+        //        .toUpperCase());
         btn_desconectar.setEnabled(false);
     }
 
@@ -42,12 +42,11 @@ public class VCliente extends javax.swing.JFrame {
         String ip = jLabel5.getText();
         String uuid = jLabel6.getText();
         String username = jTextField1.getText();
-        Integer estado = 1;
+        Integer estado = 2;
         miInfo = new ClienteInfo();
         miInfo.setIp(ip);
         miInfo.setUuid(uuid);
-        miInfo.setUuid(username);
-        miInfo.setUuid(username);
+        miInfo.setUsername(username);
         miInfo.setStatus(estado);
         out.writeObject(miInfo);
         out.flush();
@@ -57,7 +56,7 @@ public class VCliente extends javax.swing.JFrame {
                 while (true) {
                     Object obj = in.readObject();
                     if (obj instanceof List) {
-                        clientesData = (List<String[]>) obj;
+                        clientesData = (List<ClienteInfo>) obj;
                         // Actualizar la tabla de clientes en la interfaz gráfica
                         SwingUtilities.invokeLater(this::actualizarTablaCliente);
                     } else {
@@ -65,7 +64,7 @@ public class VCliente extends javax.swing.JFrame {
                     }
                 }
             } catch (IOException | ClassNotFoundException ex) {
-                System.out.println("DESCONECTADO");
+                System.out.println("exc DESCONECTADO");
             }
         });
         receiveThread.start();
@@ -75,8 +74,13 @@ public class VCliente extends javax.swing.JFrame {
         // Borrar todas las filas existentes en la tabla
         clientesModel.setRowCount(0);
         // Agregar los clientes a la tabla
-        for (String[] data : clientesData) {
-            clientesModel.addRow(data);
+        for (ClienteInfo data : clientesData) {
+            clientesModel.addRow(new Object[]{
+                    data.getIp(),
+                    data.getUuid(),
+                    data.getUsername(),
+                    data.getStatus()
+            });
         }
     }
 
@@ -270,25 +274,14 @@ public class VCliente extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void tbl_listaContactosMouseClicked(java.awt.event.MouseEvent evt) {
-        int x = tbl_listaContactos.getSelectedRow();
-        destinatario = clientesData.get(x);
-        btnChat.setEnabled(true);
+
     }
     private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {
 
     }
 
     private void btnChatActionPerformed(java.awt.event.ActionEvent evt) {
-        if (miInfo.getUuid().equals(destinatario[1])) {
-            return;
-        }
-        txtChat.setText("");
-        txtMensaje.setText("");
-        dlgChat.setVisible(true);
 
-        dlgChat.setTitle(destinatario[1].concat(" ").concat(destinatario[2]));
-        dlgChat.setSize(440, 350);
-        btnChat.setEnabled(false);
     }
 
     private void btn_conectarServidorActionPerformed(java.awt.event.ActionEvent evt) {
@@ -368,7 +361,7 @@ public class VCliente extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new VCliente().setVisible(true);
+                    new VCliente(null).setVisible(true);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

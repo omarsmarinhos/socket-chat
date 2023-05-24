@@ -8,6 +8,7 @@ import javax.swing.table.DefaultTableModel;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -259,12 +260,14 @@ public class VServidor extends javax.swing.JFrame {
                         if (entrada instanceof ClienteInfo) {
                             clienteInfo = (ClienteInfo) entrada;
 
-                            synchronized (clientesRepository) {
-                                clientesRepository.guardar(clienteInfo);
+                            synchronized (clientes) {
+                                clientes.add(this);
+                                clientesRepository.actualizarEstado(clienteInfo.getUuid(), 1);
                             }
                         } else if (entrada instanceof String) {
                             synchronized (clientes) {
                                 clientes.remove(this);
+                                clientesRepository.actualizarEstado(clienteInfo.getUuid(), 2);
                             }
                         }
 
@@ -277,6 +280,8 @@ public class VServidor extends javax.swing.JFrame {
                     clientes.remove(this);
                 }
                 actualizarTablaClientes();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
         }
 
@@ -284,17 +289,7 @@ public class VServidor extends javax.swing.JFrame {
 
     private static void enviarListaClientes() throws IOException {
         synchronized (clientes) {
-            List<String[]> clientesData = new ArrayList<>();
-
-            for (ClienteRunnable cliente : clientes) {
-                String[] data = {
-                        cliente.clienteInfo.getIp(),
-                        cliente.clienteInfo.getUuid(),
-                        cliente.clienteInfo.getUsername(),
-                        String.valueOf(cliente.clienteInfo.getStatus())
-                };
-                clientesData.add(data);
-            }
+            List<ClienteInfo> clientesData = clientesRepository.getClientes();
 
             for (ClienteRunnable cliente : clientes) {
                 cliente.out.writeObject(clientesData);
