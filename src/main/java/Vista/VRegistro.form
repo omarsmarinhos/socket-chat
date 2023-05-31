@@ -94,8 +94,8 @@
                                   </Group>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="txtUsername" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="txtPassword1" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="txtUsername" max="32767" attributes="0"/>
+                                      <Component id="txtPassword1" max="32767" attributes="0"/>
                                       <Component id="txtPassword2" alignment="0" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
@@ -209,10 +209,6 @@
         </Component>
         <Component class="javax.swing.JTextField" name="txtNombres">
         </Component>
-        <Component class="javax.swing.JTextField" name="txtPassword2">
-        </Component>
-        <Component class="javax.swing.JTextField" name="txtPassword1">
-        </Component>
         <Component class="javax.swing.JTextField" name="txtUsername">
         </Component>
         <Component class="javax.swing.JButton" name="btnGuardar">
@@ -227,6 +223,10 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Cancelar"/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JPasswordField" name="txtPassword1">
+        </Component>
+        <Component class="javax.swing.JPasswordField" name="txtPassword2">
         </Component>
       </SubComponents>
     </Container>

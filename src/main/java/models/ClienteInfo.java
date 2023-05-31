@@ -1,9 +1,11 @@
-package Vista;
+package models;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 public class ClienteInfo implements Serializable {
+
+    private Long id;
     private String ip;
     private String uuid;
     private String username;
@@ -27,6 +29,14 @@ public class ClienteInfo implements Serializable {
         this.apellidos = apellidos;
         this.fechaNacimiento = fechaNacimiento;
         this.numCelular = numCelular;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getIp() {
@@ -112,7 +122,8 @@ public class ClienteInfo implements Serializable {
     @Override
     public String toString() {
         return "ClienteInfo{" +
-                "ip='" + ip + '\'' +
+                "id='" + id + '\'' +
+                ",ip='" + ip + '\'' +
                 ", uuid='" + uuid + '\'' +
                 ", username='" + username + '\'' +
                 ", status='" + status + '\'' +

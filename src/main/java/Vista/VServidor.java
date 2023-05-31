@@ -1,7 +1,12 @@
 package Vista;
 
+import models.Estado;
+import models.ClienteInfo;
+import models.Mensaje;
 import repositories.ClientesRepositoryImpl;
 import repositories.ClientesRespository;
+import repositories.MensajesRepository;
+import repositories.MensajesRepositoryImpl;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -10,10 +15,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 public class VServidor extends javax.swing.JFrame {
 
     private static final ClientesRespository clientesRepository = new ClientesRepositoryImpl();
+    private static final MensajesRepository mensajesRepository = new MensajesRepositoryImpl();
+
     private static final List<ClienteRunnable> clientes = new ArrayList<>();
     private ServerSocket serverSocket;
 
@@ -27,7 +36,7 @@ public class VServidor extends javax.swing.JFrame {
     }
 
     private void initServerSocket() throws IOException {
-        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
             @Override
             protected Void doInBackground() throws Exception {
                 serverSocket = new ServerSocket(59001);
@@ -196,7 +205,6 @@ public class VServidor extends javax.swing.JFrame {
     private void btn_startActionPerformed(java.awt.event.ActionEvent evt) {
         //Activar el servidor
         try {
-
             initServerSocket();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -267,6 +275,9 @@ public class VServidor extends javax.swing.JFrame {
                                 clientes.remove(this);
                                 clientesRepository.actualizarEstado(clienteInfo.getUuid(), Estado.DESCONECTADO);
                             }
+                        } else if (entrada instanceof Mensaje mensaje) {
+                            mensajesRepository.crearMensaje(mensaje);
+                            enviarMensaje(mensaje);
                         }
 
                         actualizarTablaClientes();
@@ -282,6 +293,23 @@ public class VServidor extends javax.swing.JFrame {
             }
         }
 
+    }
+
+    private static void enviarMensaje(Mensaje mensaje) throws IOException {
+        synchronized (clientes) {
+            Optional<ClienteRunnable> cliente = clientes.stream()
+                    .filter(c -> Objects.equals(c.clienteInfo.getId(), mensaje.getDestinatarioId()))
+                    .findFirst();
+
+            cliente.ifPresent(c -> {
+                try {
+                    c.out.writeObject(mensaje);
+                    c.out.flush();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
     }
 
     private static void enviarListaClientes() throws IOException {

@@ -1,6 +1,7 @@
 
 package Vista;
 
+import models.ClienteInfo;
 import repositories.ClientesRepositoryImpl;
 import repositories.ClientesRespository;
 
@@ -34,11 +35,11 @@ public class VRegistro extends javax.swing.JFrame {
         txtCelular = new javax.swing.JTextField();
         txtApellidos = new javax.swing.JTextField();
         txtNombres = new javax.swing.JTextField();
-        txtPassword2 = new javax.swing.JTextField();
-        txtPassword1 = new javax.swing.JTextField();
         txtUsername = new javax.swing.JTextField();
         btnGuardar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
+        txtPassword1 = new javax.swing.JPasswordField();
+        txtPassword2 = new javax.swing.JPasswordField();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -173,8 +174,8 @@ public class VRegistro extends javax.swing.JFrame {
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) throws UnknownHostException {//GEN-FIRST:event_btnGuardarActionPerformed
         String username = txtUsername.getText();
-        String password1 = txtPassword1.getText();
-        String password2 = txtPassword2.getText();
+        String password1 = String.valueOf(txtPassword1.getPassword());
+        String password2 = String.valueOf(txtPassword2.getPassword());
         String nombres = txtNombres.getText();
         String apellidos = txtApellidos.getText();
         String fechaNacimiento = txtFechaNacimiento.getText();
@@ -253,8 +254,8 @@ public class VRegistro extends javax.swing.JFrame {
     private javax.swing.JTextField txtCelular;
     private javax.swing.JTextField txtFechaNacimiento;
     private javax.swing.JTextField txtNombres;
-    private javax.swing.JTextField txtPassword1;
-    private javax.swing.JTextField txtPassword2;
+    private javax.swing.JPasswordField txtPassword1;
+    private javax.swing.JPasswordField txtPassword2;
     private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 }

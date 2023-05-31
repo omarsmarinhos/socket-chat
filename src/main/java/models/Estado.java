@@ -1,4 +1,4 @@
-package Vista;
+package models;
 
 public class Estado {
 

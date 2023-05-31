@@ -1,7 +1,7 @@
 package repositories;
 
-import Vista.ClienteInfo;
-import Vista.Estado;
+import models.ClienteInfo;
+import models.Estado;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -127,7 +127,7 @@ public class ClientesRepositoryImpl implements ClientesRespository {
 
             int filasActualizadas = statement.executeUpdate();
             if (filasActualizadas > 0) {
-                System.out.println("Estado del cliente actualzido");
+                System.out.println("Estado del cliente actualizado");
             } else {
                 System.out.println("No se puede actualizar el estado del cliente.");
             }
@@ -146,6 +146,7 @@ public class ClientesRepositoryImpl implements ClientesRespository {
 
 
     private static ClienteInfo getClienteInfo(ResultSet resultSet) throws SQLException {
+        Long id = resultSet.getLong("id");
         String ip = resultSet.getString("ip");
         String uuid = resultSet.getString("uuid");
         String username = resultSet.getString("username");
@@ -158,6 +159,7 @@ public class ClientesRepositoryImpl implements ClientesRespository {
 
         ClienteInfo cliente = new ClienteInfo();
 
+        cliente.setId(id);
         cliente.setIp(ip);
         cliente.setUuid(uuid);
         cliente.setUsername(username);

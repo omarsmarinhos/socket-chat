@@ -1,6 +1,7 @@
 
 package Vista;
 
+import models.ClienteInfo;
 import repositories.ClientesRepositoryImpl;
 import repositories.ClientesRespository;
 
@@ -22,10 +23,10 @@ public class Login extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         txtUsername = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        txtPassword = new javax.swing.JTextField();
         btnIniciarSesion = new javax.swing.JButton();
         btnRegistrar = new javax.swing.JButton();
         linkRecuperar = new javax.swing.JLabel();
+        txtPassword = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -34,12 +35,6 @@ public class Login extends javax.swing.JFrame {
         jLabel2.setText("Nick ");
 
         jLabel3.setText("Password");
-
-        txtPassword.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtPasswordActionPerformed(evt);
-            }
-        });
 
         btnIniciarSesion.setText("Sing up");
         btnIniciarSesion.addActionListener(new java.awt.event.ActionListener() {
@@ -57,7 +52,7 @@ public class Login extends javax.swing.JFrame {
 
         linkRecuperar.setForeground(new java.awt.Color(0, 102, 255));
         linkRecuperar.setText("Recuperar contraseña");
-        linkRecuperar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        linkRecuperar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         linkRecuperar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 linkRecuperarMouseClicked(evt);
@@ -77,11 +72,11 @@ public class Login extends javax.swing.JFrame {
                             .addComponent(jLabel2))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtPassword)
                             .addComponent(txtUsername)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(linkRecuperar)
-                                .addGap(0, 55, Short.MAX_VALUE))))
+                                .addGap(0, 55, Short.MAX_VALUE))
+                            .addComponent(txtPassword)))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addGap(120, 120, 120)
                         .addComponent(jLabel1)
@@ -91,7 +86,7 @@ public class Login extends javax.swing.JFrame {
                         .addComponent(btnIniciarSesion)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnRegistrar)))
-                .addContainerGap(88, Short.MAX_VALUE))
+                .addGap(88, 88, 88))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -106,7 +101,7 @@ public class Login extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
                 .addComponent(linkRecuperar)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -132,10 +127,6 @@ public class Login extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void txtPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtPasswordActionPerformed
 
     private void btnIniciarSesionActionPerformed(java.awt.event.ActionEvent evt) {
         String username = txtUsername.getText();
@@ -214,7 +205,7 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel linkRecuperar;
-    private javax.swing.JTextField txtPassword;
+    private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 }
